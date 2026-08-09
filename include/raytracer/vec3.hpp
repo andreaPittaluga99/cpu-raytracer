@@ -40,7 +40,7 @@ class Vec3
     constexpr double b () const noexcept {return coord_[2];}
 
     /***************************** Operators overloading ************************/
-    Vec3 operator-() const {
+    constexpr Vec3 operator-() const {
         Vec3 ret (-coord_[0], -coord_[1], -coord_[2]); 
         return ret;
     }
@@ -54,7 +54,7 @@ class Vec3
         return coord_[i];
     }
 
-    double& operator[] (size_t i) 
+    constexpr double& operator[] (size_t i) 
     {
         if (i > 2)
         {
@@ -63,43 +63,43 @@ class Vec3
         return coord_[i];
     }   
 
-    Vec3& operator+=(const Vec3& other) {
+    constexpr Vec3& operator+=(const Vec3& other) {
         return elementwise_assign(other, std::plus<>{});
     }
 
     /************************ Op *******************************/
     
-    Vec3& operator-=(const Vec3& other) {
+    constexpr Vec3& operator-=(const Vec3& other) {
         return elementwise_assign(other, std::minus<>{});
     }
 
-    Vec3& operator*=(const Vec3& other) {
+    constexpr Vec3& operator*=(const Vec3& other) {
         return elementwise_assign(other, std::multiplies<>{});
     }
 
-    Vec3& operator/=(const Vec3& other) {
+    constexpr Vec3& operator/=(const Vec3& other) {
         return elementwise_assign(other, std::divides<>{});
     }
 
-    [[nodiscard]] Vec3 operator+ (const Vec3& other) const {
+    [[nodiscard]] constexpr Vec3 operator+ (const Vec3& other) const {
         Vec3 res(*this);
         res += other;
         return res; 
     }
 
-    [[nodiscard]] Vec3 operator- (const Vec3& other) const {
+    [[nodiscard]] constexpr Vec3 operator- (const Vec3& other) const {
         Vec3 res(*this);
         res -= other;
         return res; 
     }
 
-    [[nodiscard]] Vec3 operator* (const Vec3& other) const {
+    [[nodiscard]] constexpr Vec3 operator* (const Vec3& other) const {
         Vec3 res(*this);
         res *= other;
         return res; 
     }
 
-    [[nodiscard]] Vec3 operator/ (const Vec3& other) const {
+    [[nodiscard]] constexpr Vec3 operator/ (const Vec3& other) const {
         Vec3 res(*this);
         res /= other;
         return res; 
@@ -110,28 +110,28 @@ class Vec3
 
     template<typename Scalar>
     requires (std::is_arithmetic_v<Scalar>)
-    Vec3& operator+=(Scalar value){
+    constexpr Vec3& operator+=(Scalar value){
         return scalar_assign(value, std::plus<>{});
     }
 
     template<typename Scalar>
     requires (std::is_arithmetic_v<Scalar>)
-    Vec3& operator-=(Scalar value){
+    constexpr Vec3& operator-=(Scalar value){
         return scalar_assign(value, std::minus<>{});
     }
 
     template<typename Scalar>
     requires (std::is_arithmetic_v<Scalar>)
-    Vec3& operator*=(Scalar value){
+    constexpr Vec3& operator*=(Scalar value){
         return scalar_assign(value, std::multiplies<>{});
     }
     template<typename Scalar>
     requires (std::is_arithmetic_v<Scalar>)
-    Vec3& operator/=(Scalar value){
+    constexpr Vec3& operator/=(Scalar value){
         return scalar_assign(value, std::divides<>{});
     }
 
-template<typename Scalar>
+    template<typename Scalar>
     requires (std::is_arithmetic_v<Scalar>)
     [[nodiscard]] constexpr Vec3 operator+(Scalar value) const 
     {
@@ -184,7 +184,7 @@ template<typename Scalar>
 
     /************************** Helpers **************************************/
     template<typename Scalar, typename Op>
-    Vec3& scalar_assign(Scalar value, Op op) 
+    constexpr Vec3& scalar_assign(Scalar value, Op op) 
     {
         for (auto& x : coord_) 
         {
@@ -195,7 +195,7 @@ template<typename Scalar>
     }
 
     template<typename Op>
-    Vec3& elementwise_assign(const Vec3& other, Op op) 
+    constexpr Vec3& elementwise_assign(const Vec3& other, Op op) 
     {
         for (size_t i = 0; i < coord_.size(); ++i) 
         {
