@@ -36,15 +36,24 @@ if(BUILD_TESTS)
     enable_testing()
     include(GoogleTest)
 
+    # --- Test Vec3 ---
     add_executable(test_vec3 test/vec3_test.cpp)
     target_include_directories(test_vec3 PRIVATE include)
     target_link_libraries(test_vec3 PRIVATE gtest_main)
     
+    # --- Test Ray ---
+    add_executable(test_ray test/ray_test.cpp)
+    target_include_directories(test_ray PRIVATE include)
+    target_link_libraries(test_ray PRIVATE gtest_main)
+
     if(MSVC)
         target_compile_options(test_vec3 PRIVATE /W4)
+        target_compile_options(test_ray PRIVATE /W4)
     else()
         target_compile_options(test_vec3 PRIVATE -Wall -Wextra -Wpedantic)
+        target_compile_options(test_ray PRIVATE -Wall -Wextra -Wpedantic)
     endif()
 
     gtest_discover_tests(test_vec3)
+    gtest_discover_tests(test_ray)
 endif()
