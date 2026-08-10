@@ -1,33 +1,20 @@
 #include <iostream>
+
+#include <memory>
+#include <limits>
+
 #include <raytracer/vec3.hpp>
 #include <raytracer/ray.hpp>
+#include <raytracer/hittable_list.hpp>
+#include <raytracer/sphere.hpp>
 
-
-double hit_sphere (const rt::Point3& center, const double radious, const rt::Ray& ray)
+rt::Color ray_color(const rt::Ray& r, const rt::Hittable& world) 
 {
-    rt::Vec3 oc = ray.origin() - center;
-
-    double a = ray.direction().lenght_squared();
-    double h = rt::dot(ray.direction(), oc);
-    double c = oc.lenght_squared() - (radious * radious);
-
-    double discriminant = (h * h) - (a * c);
-    return (discriminant < 0) ? -1.0 : ((-h - std::sqrt(discriminant))/a); 
-}
-
-rt::Color ray_color(const rt::Ray& r) {
-    // define the sphere
-    rt::Point3 sphere_center(0.0, 0.0, -1.0);
-    double sphere_radius = 0.5;
-
-    // check for intersection
-    double t = hit_sphere(sphere_center, sphere_radius, r);
-
-    // if t greater than 0, we hit the sphere
-    if (t > 0.0) {
-        rt::Vec3 N = r.at(t) - rt::Vec3{0, 0, -1};
-        rt::Vec3 ret = N.unit_vector();
-        return 0.5 * rt::Color(ret.x()+1, ret.y()+1, ret.z()+1);
+    rt::HitRecord rec;
+    //we use 0.001 instead of 0 to avoid surface accuracy issues
+    if(world.hit(r, 0.001, std::numeric_limits<double>::infinity(), rec))
+    {
+        return 0.5 * (rec.normal + rt::Color(1.0, 1.0, 1.0));
     }
 
     // if the ray misses, we draw the bg
@@ -67,6 +54,13 @@ int main() {
     
     constexpr rt::Point3 pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
+    //instantiate the world
+    rt::HittableList world;
+    //center sphere
+    world.add(std::make_shared<rt::Sphere>(rt::Point3(0.0, 0.0, -1.0), 0.5));
+    //bit spehere on the ground
+    world.add(std::make_shared<rt::Sphere>(rt::Point3(0.0, -100.5, -1.0), 100.0));
+
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
     for (int y = 0; y < image_height; ++y) 
@@ -77,7 +71,7 @@ int main() {
             auto ray_direction = pixel_center - camera_center;
             rt::Ray r(camera_center, ray_direction);
 
-            rt::Color pixel_color = ray_color(r);
+            rt::Color pixel_color = ray_color(r, world);
             write_color(std::cout, pixel_color);
         }
     }
