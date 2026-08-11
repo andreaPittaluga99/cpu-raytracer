@@ -8,30 +8,28 @@
 #include <raytracer/hittable_list.hpp>
 #include <raytracer/sphere.hpp>
 #include <raytracer/utils.hpp>
+#include <raytracer/color.hpp>
 
-rt::Color ray_color(const rt::Ray& r, const rt::Hittable& world) 
+rt::Color ray_color(const rt::Ray& r, const rt::Hittable& world, int depth) 
 {
+    if (depth <= 0)
+    {
+        return rt::Color(0.0, 0.0, 0.0);
+    }
+    
+
     rt::HitRecord rec;
     //we use 0.001 instead of 0 to avoid surface accuracy issues
     if(world.hit(r, 0.001, std::numeric_limits<double>::infinity(), rec))
     {
-        return 0.5 * (rec.normal + rt::Color(1.0, 1.0, 1.0));
+        rt::Vec3 direction = rec.normal + rt::utils::random_unit_vector();
+        return 0.5 * ray_color(rt::Ray(rec.p, direction), world, depth - 1);
     }
 
     // if the ray misses, we draw the bg
     rt::Vec3 unit_direction = r.direction().unit_vector();
     auto a = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - a) * rt::Color(1.0, 1.0, 1.0) + a * rt::Color(0.5, 0.7, 1.0);
-}
-
-
-void write_color(std::ostream& out, const rt::Color& pixel_color)
-{
-    int rbyte = static_cast<int>(255.999 * pixel_color.x());
-    int gbyte = static_cast<int>(255.999 * pixel_color.y());
-    int bbyte = static_cast<int>(255.999 * pixel_color.z());
-
-    out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
 }
 
 int main()
@@ -66,6 +64,8 @@ int main()
     //bit spehere on the ground
     world.add(std::make_shared<rt::Sphere>(rt::Point3(0.0, -100.5, -1.0), 100.0));
 
+    int ray_depth = 100;
+
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
     for (int y = 0; y < image_height; ++y) 
@@ -76,20 +76,20 @@ int main()
             for(int samples = 0; samples < samples_per_pixel; ++samples)
             {
                 //random offset
-                auto px = rt::random_double(-0.5, 0.5);
-                auto py = rt::random_double(-0.5, 0.5);
+                auto px = rt::utils::random_double(-0.5, 0.5);
+                auto py = rt::utils::random_double(-0.5, 0.5);
 
                 auto pixel_sample = pixel00_loc + ((x + px) * pixel_delta_u) + ((y + py) * pixel_delta_v);
 
                 auto ray_direction = pixel_sample - camera_center;
                 rt::Ray ray (camera_center, ray_direction);
 
-                pixel_color += ray_color (ray, world);
+                pixel_color += ray_color (ray, world, ray_depth);
             }
             //we get the mean of the colours computed
             pixel_color = pixel_color / samples_per_pixel;
 
-            write_color(std::cout, pixel_color);
+            rt::write_color(std::cout, pixel_color);
         }
     }
     return 0;
