@@ -62,13 +62,16 @@ int main()
     
     constexpr rt::Point3 pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
-    constexpr int samples_per_pixel = 100;
+    constexpr int samples_per_pixel = 300;
 
     //instantiate the world
     rt::HittableList world;
-    //center sphere
-    auto material_center = std::make_shared<rt::Lambertian>(rt::Color(0.8, 0.0, 0.0));
-    world.add(std::make_shared<rt::Sphere>(rt::Point3(0.0, 0.0, -1.0), 0.5, material_center));
+    //left sphere
+    auto material_left = std::make_shared<rt::Lambertian>(rt::Color(0.8, 0.0, 0.0));
+    world.add(std::make_shared<rt::Sphere>(rt::Point3(-0.6, 0.0, -1.0), 0.5, material_left));
+    //right sphere
+    auto material_right = std::make_shared<rt::Metallic>(rt::Color(0.8, 0.8, 0.8), 0.1);
+    world.add(std::make_shared<rt::Sphere>(rt::Point3(0.6, 0.0, -1.0), 0.5, material_right));
     //bit spehere on the ground
     auto material_ground = std::make_shared<rt::Lambertian>(rt::Color(0.8, 0.8, 0.0));
     world.add(std::make_shared<rt::Sphere>(rt::Point3(0.0, -100.5, -1.0), 100.0, material_ground));
