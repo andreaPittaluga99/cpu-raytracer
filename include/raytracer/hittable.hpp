@@ -1,10 +1,15 @@
 #ifndef HITTABLE_HPP
 #define HITTABLE_HPP
 
+#include <memory>
+
 #include <raytracer/vec3.hpp>
 #include <raytracer/ray.hpp>
 
+
 namespace rt {
+
+class Material;
 
 struct HitRecord 
 {
@@ -12,6 +17,7 @@ struct HitRecord
     Vec3 normal;
     double t{0.0};
     bool front_face{true};
+    std::shared_ptr<Material> mat;
 
     // set the normal to always oppose the ray
     void set_face_normal(const Ray& r, const Vec3& outward_normal)

@@ -5,6 +5,7 @@
 
 #include <raytracer/hittable.hpp>
 #include <raytracer/vec3.hpp>
+#include <raytracer/materials.hpp>
 
 namespace rt
 {
@@ -13,9 +14,10 @@ class Sphere : public Hittable
 private:
     Point3 center_;
     double radius_;
+    std::shared_ptr<Material> mat_;
 public:
-    Sphere (const Point3& center, const double radius)
-    :   center_(center), radius_(radius) {}
+    Sphere (const Point3& center, const double radius, const std::shared_ptr<Material> mat)
+    :   center_(center), radius_(radius), mat_(mat) {}
 
     bool hit(const Ray& r, double ray_tmin, double ray_tmax, HitRecord& rec) const override
     {
@@ -42,6 +44,7 @@ public:
             rec.p = r.at(rec.t);
             auto normal = (rec.p - center_) / radius_;
             rec.set_face_normal(r, normal);
+            rec.mat = mat_;
             return true;
         }
         //if out of range, we calculate the positive delta instead

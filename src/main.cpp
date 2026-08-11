@@ -9,6 +9,7 @@
 #include <raytracer/sphere.hpp>
 #include <raytracer/utils.hpp>
 #include <raytracer/color.hpp>
+#include <raytracer/materials.hpp>
 
 rt::Color ray_color(const rt::Ray& r, const rt::Hittable& world, int depth) 
 {
@@ -17,13 +18,19 @@ rt::Color ray_color(const rt::Ray& r, const rt::Hittable& world, int depth)
         return rt::Color(0.0, 0.0, 0.0);
     }
     
-
     rt::HitRecord rec;
     //we use 0.001 instead of 0 to avoid surface accuracy issues
     if(world.hit(r, 0.001, std::numeric_limits<double>::infinity(), rec))
     {
-        rt::Vec3 direction = rec.normal + rt::utils::random_unit_vector();
-        return 0.5 * ray_color(rt::Ray(rec.p, direction), world, depth - 1);
+        rt::Ray scattered;
+        rt::Color attenuation;
+        if (rec.mat && rec.mat->scatter (r, rec, attenuation, scattered))
+        {
+            return attenuation * ray_color(scattered, world, depth - 1);
+        }
+        
+        //if the mat completly assorbs the light return full black
+        return rt::Color(0.0, 0.0, 0.0);
     }
 
     // if the ray misses, we draw the bg
@@ -60,9 +67,11 @@ int main()
     //instantiate the world
     rt::HittableList world;
     //center sphere
-    world.add(std::make_shared<rt::Sphere>(rt::Point3(0.0, 0.0, -1.0), 0.5));
+    auto material_center = std::make_shared<rt::Lambertian>(rt::Color(0.8, 0.0, 0.0));
+    world.add(std::make_shared<rt::Sphere>(rt::Point3(0.0, 0.0, -1.0), 0.5, material_center));
     //bit spehere on the ground
-    world.add(std::make_shared<rt::Sphere>(rt::Point3(0.0, -100.5, -1.0), 100.0));
+    auto material_ground = std::make_shared<rt::Lambertian>(rt::Color(0.8, 0.8, 0.0));
+    world.add(std::make_shared<rt::Sphere>(rt::Point3(0.0, -100.5, -1.0), 100.0, material_ground));
 
     int ray_depth = 100;
 
