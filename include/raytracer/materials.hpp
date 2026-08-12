@@ -77,6 +77,15 @@ class Dielectric : public Material
 private:
     rt::Color albedo_;
     double index_of_refraction_;
+
+    //using schlick approximation, source: https://en.wikipedia.org/wiki/Schlick's_approximation
+    double reflectance_schlick (double cos_theta) const
+    {
+        double r0 = (1.0 - index_of_refraction_) / (1.0 + index_of_refraction_);
+        r0 *= r0;
+
+        return r0 + (1 - r0) * std::pow(1.0 - cos_theta, 5);
+    }
 public:
     Dielectric (const rt::Color& albedo, double index_of_refraction)
     :   albedo_(albedo), index_of_refraction_(index_of_refraction) {}
@@ -99,7 +108,7 @@ public:
         double sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);
         bool cannot_refract = eta * sin_theta > 1.0;
         Vec3 r_out;
-        if(cannot_refract)
+        if(cannot_refract || reflectance_schlick(cos_theta) > rt::utils::random_double())
         {
             r_out = unit_vector - 2 * dot(unit_vector, unit_normal) * unit_normal;
         }
