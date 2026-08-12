@@ -55,6 +55,7 @@ public:
             rec.p = r.at(rec.t);
             auto normal = (rec.p - center_) / radius_;
             rec.set_face_normal(r, normal);
+            rec.mat = mat_;
             return true;
         }
 

@@ -67,7 +67,7 @@ int main()
     //instantiate the world
     rt::HittableList world;
     //left sphere
-    auto material_left = std::make_shared<rt::Lambertian>(rt::Color(0.8, 0.0, 0.0));
+    auto material_left = std::make_shared<rt::Dielectric>(rt::Color(0.8, 0.0, 0.0), 1.5);
     world.add(std::make_shared<rt::Sphere>(rt::Point3(-0.6, 0.0, -1.0), 0.5, material_left));
     //right sphere
     auto material_right = std::make_shared<rt::Metallic>(rt::Color(0.8, 0.8, 0.8), 0.1);
