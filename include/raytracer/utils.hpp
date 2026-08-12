@@ -37,7 +37,7 @@ namespace rt::utils
         while (true) 
         {
             auto p = random_vec3(-1.0, 1.0);
-            auto lensq = p.lenght_squared();
+            auto lensq = p.length_squared();
             // so we dont divide for 0
             if (1e-160 < lensq && lensq <= 1.0)
             {

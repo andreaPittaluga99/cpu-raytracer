@@ -168,11 +168,11 @@ class Vec3
     }
     
     /***************************** Functions **********************************/
-    [[nodiscard]] constexpr double lenght_squared () const noexcept { return (coord_[0] * coord_[0]) + (coord_[1] * coord_[1]) + (coord_[2] * coord_[2]); }
+    [[nodiscard]] constexpr double length_squared () const noexcept { return (coord_[0] * coord_[0]) + (coord_[1] * coord_[1]) + (coord_[2] * coord_[2]); }
 
-    [[nodiscard]] double lenght() const { return std::sqrt(lenght_squared()); }
+    [[nodiscard]] double length() const { return std::sqrt(length_squared()); }
 
-    [[nodiscard]] Vec3 unit_vector() const { return *this / lenght();}
+    [[nodiscard]] Vec3 unit_vector() const { return *this / length();}
 
 
     /*****************************************************************************/

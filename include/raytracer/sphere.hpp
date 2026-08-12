@@ -23,10 +23,10 @@ public:
     {
         rt::Vec3 oc = r.origin() - center_;
 
-        double a = r.direction().lenght_squared();
+        double a = r.direction().length_squared();
         // h = b/2
         double h = rt::dot(r.direction(), oc);
-        double c = oc.lenght_squared() - (radius_ * radius_);
+        double c = oc.length_squared() - (radius_ * radius_);
 
         double discriminant_reduced = (h * h) - (a * c);
 
