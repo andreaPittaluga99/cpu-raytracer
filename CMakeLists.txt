@@ -12,8 +12,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(BUILD_TESTS "Build unit tests" ON)
 
+find_package(OpenMP REQUIRED)
+
 add_executable(raytracer src/main.cpp)
 target_include_directories(raytracer PRIVATE include)
+
+target_link_libraries(raytracer PRIVATE OpenMP::OpenMP_CXX)
 
 if(MSVC)
     target_compile_options(raytracer PRIVATE /W4 /O2)
@@ -56,4 +60,15 @@ if(BUILD_TESTS)
 
     gtest_discover_tests(test_vec3)
     gtest_discover_tests(test_ray)
+endif()
+
+# --- Target benchmark ---
+add_executable(bench_raytracer src/benchmark.cpp)
+target_include_directories(bench_raytracer PRIVATE include)
+target_link_libraries(bench_raytracer PRIVATE OpenMP::OpenMP_CXX)
+
+if(MSVC)
+    target_compile_options(bench_raytracer PRIVATE /W4 /O2)
+else()
+    target_compile_options(bench_raytracer PRIVATE -Wall -Wextra -Wpedantic -O3)
 endif()

@@ -26,7 +26,7 @@ int main()
 
     //camera init
     rt::CameraConfig cam_config;
-    cam_config.image_width = 400;
+    cam_config.image_width = 1920;
     cam_config.aspect_ratio = 16.0 / 9.0;
     cam_config.focal_length = 2.0;
     cam_config.viewport_height = 1.2;
@@ -36,7 +36,7 @@ int main()
 
     //renderer init
     rt::RenderConfig render_config;
-    render_config.samples_per_pixel = 100;
+    render_config.samples_per_pixel = 300;
     render_config.max_depth = 50;
     rt::Renderer renderer;
 

@@ -10,10 +10,10 @@ namespace rt::utils
 {
     inline double random_double()
     {
-        static std::random_device rd;
-        static std::mt19937 gen(rd());
+        thread_local std::random_device rd;
+        thread_local std::mt19937 gen(rd());
         //by default is already [0.0, 1.0)
-        std::uniform_real_distribution<double> distrib(0.0, 1.0);
+        thread_local std::uniform_real_distribution<double> distrib(0.0, 1.0);
         return distrib(gen);
     }
 

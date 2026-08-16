@@ -44,7 +44,7 @@ public:
             rec.p = r.at(rec.t);
             auto normal = (rec.p - center_) / radius_;
             rec.set_face_normal(r, normal);
-            rec.mat = mat_;
+            rec.mat = mat_.get();
             return true;
         }
         //if out of range, we calculate the positive delta instead
@@ -55,7 +55,7 @@ public:
             rec.p = r.at(rec.t);
             auto normal = (rec.p - center_) / radius_;
             rec.set_face_normal(r, normal);
-            rec.mat = mat_;
+            rec.mat = mat_.get();
             return true;
         }
 

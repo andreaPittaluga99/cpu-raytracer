@@ -21,7 +21,7 @@ struct RenderConfig
 class Renderer
 {
 private:
-    rt::Color ray_color(const rt::Ray& r, const rt::Hittable& world, int depth) 
+    rt::Color ray_color(const rt::Ray& r, const rt::Hittable& world, int depth) const
     {
         if (depth <= 0)
         {
@@ -50,13 +50,14 @@ private:
     }
 
 public:
-    std::vector<Color> render(const Hittable& world, const Camera& camera, const RenderConfig& config)
+    std::vector<Color> render(const Hittable& world, const Camera& camera, const RenderConfig& config) const
     {
         int width = camera.image_width();
         int height = camera.image_height();
         
         std::vector<Color> image_buffer(width * height);
 
+        #pragma omp parallel for schedule(dynamic)
         for (int y = 0; y < height; ++y)
         {
             for (int x = 0; x < width; ++x)
