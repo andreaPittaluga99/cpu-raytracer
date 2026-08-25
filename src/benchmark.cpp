@@ -33,11 +33,14 @@ int main()
     world.add(std::make_shared<rt::Sphere>(rt::Point3(-1.0,    0.0, -1.0),   0.5, mat_left));
     world.add(std::make_shared<rt::Sphere>(rt::Point3( 1.0,    0.0, -1.0),   0.5, mat_right));
 
-    //camera e renderer setup
+    // camera init
     rt::CameraConfig cam_config;
     cam_config.image_width = 1920;
     cam_config.aspect_ratio = 16.0 / 9.0;
-    cam_config.focal_length = 1.0;
+    cam_config.vfov = 30.0;
+    cam_config.look_from = rt::Point3(-2.0, 1.5, 0.0);
+    cam_config.look_at = rt::Point3(0.0, 0.0, -5.0);
+    cam_config.v_up = rt::Vec3(0.0, 1.0, 0.0);
 
     rt::Camera camera;
     camera.initialize(cam_config);

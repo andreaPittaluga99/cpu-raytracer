@@ -3,6 +3,7 @@
 
 #include <random>
 #include <cmath>
+#include <numbers>
 
 #include <raytracer/ray.hpp>
 
@@ -44,6 +45,11 @@ namespace rt::utils
                 return p / std::sqrt(lensq);
             }
         }
+    }
+
+    inline double degrees_to_radians(double vfov)
+    {
+        return (vfov * std::numbers::pi) / 180.0;
     }
 }
 
